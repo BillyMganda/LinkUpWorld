@@ -21,8 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Application\CQRS\Users\Commands\" />
+    <Folder Include="Application\CQRS\Users\Handlers\" />
+    <Folder Include="Application\CQRS\Users\Queries\" />
     <Folder Include="Controllers\" />
-    <Folder Include="Application\" />
   </ItemGroup>
 
 </Project>

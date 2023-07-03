@@ -2,7 +2,6 @@ using LinkUpWorld.UsersMicroservice.Domain.Repositories;
 using LinkUpWorld.UsersMicroservice.Infrastructure.Data;
 using LinkUpWorld.UsersMicroservice.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
