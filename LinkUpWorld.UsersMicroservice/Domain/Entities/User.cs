@@ -13,5 +13,6 @@
         public string ProfilePicture { get; set; } = string.Empty;
         public DateTime JoinDate { get; set; }
         public DateTime LastModified { get; set; }
+        public bool IsActive { get; set; } = true;
     }
 }
