@@ -1,5 +1,8 @@
 using LinkUpWorld.UsersMicroservice.Domain.Repositories;
+using LinkUpWorld.UsersMicroservice.Infrastructure.Data;
 using LinkUpWorld.UsersMicroservice.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +12,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // MINE
+builder.Services.AddDbContext<UserDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SQLConnection")));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 
