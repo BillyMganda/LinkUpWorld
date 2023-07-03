@@ -13,7 +13,6 @@
   <ItemGroup>
     <Folder Include="Controllers\" />
     <Folder Include="Application\" />
-    <Folder Include="Infrastructure\" />
   </ItemGroup>
 
 </Project>
