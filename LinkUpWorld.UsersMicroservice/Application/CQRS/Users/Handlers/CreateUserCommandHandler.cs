@@ -4,6 +4,7 @@ using LinkUpWorld.UsersMicroservice.Application.Helpers;
 using LinkUpWorld.UsersMicroservice.Domain.Entities;
 using LinkUpWorld.UsersMicroservice.Domain.Repositories;
 using MediatR;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace LinkUpWorld.UsersMicroservice.Application.CQRS.Users.Handlers
 {
@@ -17,8 +18,21 @@ namespace LinkUpWorld.UsersMicroservice.Application.CQRS.Users.Handlers
 
         public async Task<GetUserDto> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
+            // Password salt and hash
             PasswordHasher passwordHasher = new PasswordHasher();
             var passSalt = passwordHasher.GenerateSalt();
+
+            // convert image to string
+            string profilePictureString = null!;
+
+            if (request.ProfilePictureFile != null && request.ProfilePictureFile.Length > 0)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await request.ProfilePictureFile.CopyToAsync(memoryStream);
+                    profilePictureString = Convert.ToBase64String(memoryStream.ToArray());
+                }
+            }
 
             var newUser = new User
             {
@@ -30,7 +44,7 @@ namespace LinkUpWorld.UsersMicroservice.Application.CQRS.Users.Handlers
                 PasswordSalt = passSalt,
                 PasswordHash = passwordHasher.HashPassword(request.Password, passSalt),
                 Bio = request.Bio,
-                ProfilePicture = request.ProfilePicture,
+                ProfilePicture = profilePictureString!,
                 JoinDate = DateTime.UtcNow,
                 LastModified = DateTime.UtcNow,
                 IsActive = true

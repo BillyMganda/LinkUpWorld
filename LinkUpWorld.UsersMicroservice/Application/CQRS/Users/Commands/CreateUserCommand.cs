@@ -24,9 +24,9 @@ namespace LinkUpWorld.UsersMicroservice.Application.CQRS.Users.Commands
 
         [MaxLength(50, ErrorMessage = "The Bio field cannot exceed 50 characters.")]
         public string Bio { get; set; } = string.Empty;
-        
-        [MaxLength(500, ErrorMessage = "The Profile Picture field cannot exceed 500 characters.")]
-        public string ProfilePicture { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "The ProfilePictureFile field is required.")]
+        public IFormFile ProfilePictureFile { get; set; }
 
         [Required(ErrorMessage = "The Password field is required.")]
         [MinLength(8, ErrorMessage = "The Password field must have a minimum of 8 characters.")]
