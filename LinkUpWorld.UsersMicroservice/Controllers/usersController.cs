@@ -16,7 +16,7 @@ namespace LinkUpWorld.UsersMicroservice.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<GetUserDto>> CreateCategory([FromBody] CreateUserCommand command)
+        public async Task<ActionResult<GetUserDto>> CreateUser([FromBody] CreateUserCommand command)
         {
             var result = await _mediator.Send(command);
 
