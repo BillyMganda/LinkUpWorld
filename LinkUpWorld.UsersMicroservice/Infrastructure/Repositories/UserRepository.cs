@@ -21,7 +21,8 @@ namespace LinkUpWorld.UsersMicroservice.Infrastructure.Repositories
 
         public async Task<User> GetByHandleAsync(string handle)
         {
-            var results = await _dbContext.Set<User>().FindAsync(handle);
+            var results = await _dbContext.Set<User>()
+                .FirstOrDefaultAsync(x => x.Handle == handle);
             return results!;
         }
         
