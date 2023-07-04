@@ -33,10 +33,19 @@ namespace LinkUpWorld.UsersMicroservice.Controllers
             return Ok(getUserDtos);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("id/{id}")]
         public async Task<ActionResult<GetUserDto>> GetUserById(Guid id)
         {
             var query = new GetUserByIdQuery { Id = id };
+            var user = await _mediator.Send(query);
+
+            return Ok(user);
+        }
+
+        [HttpGet("handle/{handle}")]
+        public async Task<ActionResult<GetUserDto>> GetUserByHandle(string handle)
+        {
+            var query = new GetUserByHandleQuery { Handle = handle };
             var user = await _mediator.Send(query);
 
             return Ok(user);
