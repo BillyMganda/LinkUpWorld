@@ -50,5 +50,13 @@ namespace LinkUpWorld.UsersMicroservice.Controllers
 
             return Ok(user);
         }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateUser([FromBody] UpdateUserCommand command)
+        {
+            var updatedUser = await _mediator.Send(command);
+
+            return Ok(updatedUser);
+        }
     }
 }
