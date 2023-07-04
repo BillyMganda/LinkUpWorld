@@ -51,7 +51,7 @@ namespace LinkUpWorld.UsersMicroservice.Controllers
             return Ok(user);
         }
 
-        [HttpPut]
+        [HttpPut("update")]
         public async Task<IActionResult> UpdateUser([FromBody] UpdateUserCommand command)
         {
             var updatedUser = await _mediator.Send(command);
@@ -66,6 +66,14 @@ namespace LinkUpWorld.UsersMicroservice.Controllers
             await _mediator.Send(command);
 
             return NoContent();
+        }
+
+        [HttpPut("deactivate")]
+        public async Task<IActionResult> DeactivateUser([FromBody] DeactivateUserCommand command)
+        {
+            var updatedUser = await _mediator.Send(command);
+
+            return Ok(updatedUser);
         }
     }
 }
