@@ -46,7 +46,7 @@ namespace LinkUpWorld.UsersMicroservice.Application.CQRS.Users.Handlers
             }
             catch (Exception ex)
             {
-                throw new CustomException("An error occurred while deleting the user.", ex);
+                throw new CustomException("An error occurred while getting a user.", ex);
             }
         }
     }
