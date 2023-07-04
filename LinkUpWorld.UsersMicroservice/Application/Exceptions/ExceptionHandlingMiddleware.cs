@@ -16,6 +16,18 @@ namespace LinkUpWorld.UsersMicroservice.Application.Exceptions
             {
                 await _next(context);
             }
+            catch (CustomValidationException ex)
+            {
+                await HandleCustomValidationException(context, ex);
+            }
+            catch (CustomIOException ex)
+            {
+                await HandleCustomIOException(context, ex);
+            }
+            catch (CustomException ex)
+            {
+                await HandleCustomException(context, ex);
+            }
             catch (NotFoundException ex)
             {
                 await HandleNotFoundException(context, ex);
@@ -31,7 +43,7 @@ namespace LinkUpWorld.UsersMicroservice.Application.Exceptions
             catch (Exception ex)
             {
                 await HandleOtherExceptions(context, ex);
-            }           
+            }
         }
 
         private Task HandleNotFoundException(HttpContext context, NotFoundException ex)
@@ -56,6 +68,24 @@ namespace LinkUpWorld.UsersMicroservice.Application.Exceptions
         {            
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             return context.Response.WriteAsync("An unexpected error occurred.");
+        }
+
+        private Task HandleCustomValidationException(HttpContext context, CustomValidationException ex)
+        {
+            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            return context.Response.WriteAsync(ex.Message);
+        }
+
+        private Task HandleCustomIOException(HttpContext context, CustomIOException ex)
+        {
+            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            return context.Response.WriteAsync(ex.Message);
+        }
+
+        private Task HandleCustomException(HttpContext context, CustomException ex)
+        {
+            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            return context.Response.WriteAsync(ex.Message);
         }
     }
 }
