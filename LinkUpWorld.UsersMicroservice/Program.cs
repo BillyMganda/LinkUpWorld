@@ -1,3 +1,4 @@
+using LinkUpWorld.UsersMicroservice.Application.Exceptions;
 using LinkUpWorld.UsersMicroservice.Domain.Repositories;
 using LinkUpWorld.UsersMicroservice.Infrastructure.Data;
 using LinkUpWorld.UsersMicroservice.Infrastructure.Repositories;
@@ -26,6 +27,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// MINE
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
