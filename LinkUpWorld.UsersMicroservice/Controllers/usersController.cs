@@ -75,5 +75,14 @@ namespace LinkUpWorld.UsersMicroservice.Controllers
 
             return Ok(updatedUser);
         }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchUsers(string name)
+        {
+            var query = new QueryUserQuery(name);
+            var users = await _mediator.Send(query);
+
+            return Ok(users);
+        }
     }
 }
