@@ -1,5 +1,6 @@
 ﻿using LinkUpWorld.UsersMicroservice.Application.CQRS.Users.DTOs;
 using LinkUpWorld.UsersMicroservice.Application.CQRS.Users.Queries;
+using LinkUpWorld.UsersMicroservice.Application.Exceptions;
 using LinkUpWorld.UsersMicroservice.Domain.Repositories;
 using MediatR;
 
@@ -15,21 +16,28 @@ namespace LinkUpWorld.UsersMicroservice.Application.CQRS.Users.Handlers
 
         public async Task<IEnumerable<GetUserDto>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
         {
-            var users = await _userRepository.GetAllAsync();
-
-            var getUserDto = users.Select(u => new GetUserDto
+            try
             {
-                Id = u.Id,
-                FirstName = u.FirstName,
-                LastName = u.LastName,
-                Email = u.Email,
-                Handle = u.Handle,
-                Bio = u.Bio,
-                ProfilePicture = u.ProfilePicture,
-                IsActive = u.IsActive,
-            });
+                var users = await _userRepository.GetAllAsync();
 
-            return getUserDto;
+                var getUserDto = users.Select(u => new GetUserDto
+                {
+                    Id = u.Id,
+                    FirstName = u.FirstName,
+                    LastName = u.LastName,
+                    Email = u.Email,
+                    Handle = u.Handle,
+                    Bio = u.Bio,
+                    ProfilePicture = u.ProfilePicture,
+                    IsActive = u.IsActive,
+                });
+
+                return getUserDto;
+            }
+            catch (Exception ex)
+            {
+                throw new CustomException("An error occurred while getting records.", ex);
+            }
         }
     }
 }

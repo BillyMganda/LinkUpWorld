@@ -1,5 +1,6 @@
 ﻿using LinkUpWorld.UsersMicroservice.Application.CQRS.Users.Commands;
 using LinkUpWorld.UsersMicroservice.Application.CQRS.Users.DTOs;
+using LinkUpWorld.UsersMicroservice.Application.Exceptions;
 using LinkUpWorld.UsersMicroservice.Domain.Repositories;
 using MediatR;
 
@@ -15,26 +16,33 @@ namespace LinkUpWorld.UsersMicroservice.Application.CQRS.Users.Handlers
 
         public async Task<GetUserDto> Handle(DeactivateUserCommand request, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetByIdAsync(request.Id);
-
-            if(user != null)
+            try
             {
-                await _userRepository.DeactivateAsync(request.Id);
+                var user = await _userRepository.GetByIdAsync(request.Id);
+
+                if (user != null)
+                {
+                    await _userRepository.DeactivateAsync(request.Id);
+                }
+
+                var getUserDto = new GetUserDto
+                {
+                    Id = user!.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    Handle = user.Handle,
+                    Bio = user.Bio,
+                    ProfilePicture = user.ProfilePicture,
+                    IsActive = user.IsActive,
+                };
+
+                return getUserDto;
             }
-
-            var getUserDto = new GetUserDto
+            catch (Exception ex)
             {
-                Id = user!.Id,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                Handle = user.Handle,
-                Bio = user.Bio,
-                ProfilePicture = user.ProfilePicture,
-                IsActive = user.IsActive,
-            };
-
-            return getUserDto;
+                throw new CustomException("An error occurred while deactivating a user.", ex);
+            }
         }
     }
 }

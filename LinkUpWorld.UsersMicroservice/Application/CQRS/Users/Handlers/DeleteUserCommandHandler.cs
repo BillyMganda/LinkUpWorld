@@ -1,4 +1,5 @@
 ﻿using LinkUpWorld.UsersMicroservice.Application.CQRS.Users.Commands;
+using LinkUpWorld.UsersMicroservice.Application.Exceptions;
 using LinkUpWorld.UsersMicroservice.Domain.Repositories;
 using MediatR;
 
@@ -14,14 +15,32 @@ namespace LinkUpWorld.UsersMicroservice.Application.CQRS.Users.Handlers
 
         public async Task<Unit> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetByIdAsync(request.Id);
-
-            if(user != null)
+            if (request == null)
             {
-                await _userRepository.DeleteAsync(request.Id);
+                throw new CustomValidationException("command is required.");
             }
 
-            return Unit.Value;
+            try
+            {
+                var user = await _userRepository.GetByIdAsync(request.Id);
+
+                if (user == null)
+                {
+                    throw new NotFoundException($"User with ID {request.Id} not found.");
+                }
+
+                await _userRepository.DeleteAsync(request.Id);
+
+                return Unit.Value;
+            }
+            catch (NotFoundException)
+            {
+                throw new NotFoundException($"User with ID {request.Id} not found.");
+            }
+            catch (Exception ex)
+            {
+                throw new CustomException("An error occurred while deleting a user.", ex);
+            }
         }
     }
 }
