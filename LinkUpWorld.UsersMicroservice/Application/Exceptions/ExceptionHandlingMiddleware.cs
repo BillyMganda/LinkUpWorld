@@ -67,7 +67,7 @@ namespace LinkUpWorld.UsersMicroservice.Application.Exceptions
         private Task HandleOtherExceptions(HttpContext context, Exception ex)
         {            
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            return context.Response.WriteAsync("An unexpected error occurred.");
+            return context.Response.WriteAsync(ex.Message);
         }
 
         private Task HandleCustomValidationException(HttpContext context, CustomValidationException ex)
