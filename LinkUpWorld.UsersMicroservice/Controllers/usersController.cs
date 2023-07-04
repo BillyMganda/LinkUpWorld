@@ -23,8 +23,8 @@ namespace LinkUpWorld.UsersMicroservice.Controllers
 
             return Created("", result);
         }
-
-        [HttpGet]
+        
+        [HttpGet]        
         public async Task<ActionResult<List<GetUserDto>>> GetAllUsers()
         {
             var query = new GetAllUsersQuery();
