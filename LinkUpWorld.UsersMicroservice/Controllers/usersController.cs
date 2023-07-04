@@ -58,5 +58,14 @@ namespace LinkUpWorld.UsersMicroservice.Controllers
 
             return Ok(updatedUser);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(Guid id)
+        {
+            var command = new DeleteUserCommand { Id = id };
+            await _mediator.Send(command);
+
+            return NoContent();
+        }
     }
 }
