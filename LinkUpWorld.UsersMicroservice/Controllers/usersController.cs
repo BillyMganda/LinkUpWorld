@@ -20,7 +20,7 @@ namespace LinkUpWorld.UsersMicroservice.Controllers
         public async Task<ActionResult<GetUserDto>> CreateUser([FromForm] CreateUserCommand command)
         {
             var result = await _mediator.Send(command);
-
+            
             return Created("", result);
         }
         
