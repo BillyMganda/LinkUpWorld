@@ -1,5 +1,4 @@
 ﻿using LinkUpWorld.UsersMicroservice.Domain.Repositories;
-using LinkUpWorld.UsersMicroservice.Infrastructure.Data;
 
 namespace LinkUpWorld.UsersMicroservice.Infrastructure.Repositories
 {
