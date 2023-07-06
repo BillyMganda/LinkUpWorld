@@ -12,5 +12,6 @@ namespace LinkUpWorld.UsersMicroservice.Domain.Repositories
         Task DeleteAsync(Guid id);
         Task DeactivateAsync(Guid id);
         Task<IEnumerable<User>> QueryByNameAsync(string name);
+        Task<User> GetByEmailAsync(string email);
     }
 }
