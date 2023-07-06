@@ -18,7 +18,7 @@ namespace LinkUpWorld.UsersMicroservice.Infrastructure.Repositories
         public string GenerateAccessToken(Guid userId, string userEmail)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Secret"]!);
+            var key = Encoding.ASCII.GetBytes(_configuration["JwtSettings:SecretKey"]!);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -27,7 +27,7 @@ namespace LinkUpWorld.UsersMicroservice.Infrastructure.Repositories
                 new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
                 new Claim(ClaimTypes.Email, userEmail)
             }),
-                Expires = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_configuration["Jwt:AccessTokenExpiration"])),
+                Expires = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_configuration["JwtSettings:AccessTokenExpirationMinutes"])),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
@@ -47,7 +47,7 @@ namespace LinkUpWorld.UsersMicroservice.Infrastructure.Repositories
 
         public DateTime GetAccessTokenExpiration()
         {
-            return DateTime.UtcNow.AddMinutes(Convert.ToDouble(_configuration["Jwt:AccessTokenExpiration"]));
+            return DateTime.UtcNow.AddMinutes(Convert.ToDouble(_configuration["JwtSettings:AccessTokenExpirationMinutes"]));
         }
     }
 }

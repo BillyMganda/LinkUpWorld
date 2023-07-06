@@ -43,12 +43,12 @@ namespace LinkUpWorld.UsersMicroservice.Infrastructure.Repositories
 
             // Save refresh token to the user entity (e.g., database)
             user.RefreshToken = refreshToken;
-            await _userRepository.UpdateAsync(user.Id, user);
+            await _userRepository.UpdateAsync(user);
 
             // Create response DTO
             var response = new AuthResponseDto
             {
-                UserId = user.Id,
+                UserId = user.Id.ToString(),
                 Email = user.Email,
                 AccessToken = accessToken,
                 RefreshToken = refreshToken,
