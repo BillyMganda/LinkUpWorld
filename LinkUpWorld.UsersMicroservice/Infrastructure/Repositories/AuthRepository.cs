@@ -113,5 +113,31 @@ namespace LinkUpWorld.UsersMicroservice.Infrastructure.Repositories
             // Return a successful logout response
             return new LogoutResponseDto { Message = "Logout successful." };
         }
+        public async Task<TokenResponseDto> ForgotPassword(ForgotPasswordRequestDto request)
+        {
+            // Retrieve the email address from the request
+            string email = request.Email;
+
+            // Check if a user with the provided email exists in the database
+            User user = await _userRepository.GetByEmailAsync(email);
+            if (user == null)
+            {
+                throw new NotFoundException("User not found.");
+            }
+
+            // Generate a password reset token for the user
+            string resetToken = _jwtService.GeneratePasswordResetToken(user);
+
+            // Save the password reset token in the user's record
+            user.ResetPasswordToken = resetToken;
+            user.ResetPasswordTokenExpiry = DateTime.UtcNow.AddHours(24); // Set an expiry time for the reset token
+            await _userRepository.UpdateAsync(user);
+
+            // Send a password reset email to the user's email address
+            _emailService.SendPasswordResetEmail(user.Email, resetToken);
+
+            // Return the password reset token
+            return new TokenResponseDto { Token = resetToken };
+        }
     }
 }
