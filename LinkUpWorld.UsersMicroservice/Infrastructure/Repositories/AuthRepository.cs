@@ -139,5 +139,45 @@ namespace LinkUpWorld.UsersMicroservice.Infrastructure.Repositories
             // Return the password reset token
             return new TokenResponseDto { Token = resetToken };
         }
+        public async Task<ResetPasswordResponseDto> ResetPassword(ResetPasswordRequestDto request)
+        {
+            // Retrieve the reset password token and the new password from the request
+            string resetToken = request.ResetToken;
+            string newPassword = request.NewPassword;
+
+            // Check if a user with the provided reset password token exists in the database
+            User user = await _userRepository.GetByResetPasswordTokenAsync(resetToken);
+            if (user == null)
+            {
+                throw new NotFoundException("Invalid reset password token.");
+            }
+
+            // Validate the reset password token and its expiry
+            if (!ValidateResetPasswordToken(user, resetToken))
+            {
+                throw new UnauthorizedException("Invalid reset password token.");
+            }
+
+            // Generate a new password hash using the new password
+            string newPasswordHash = _passwordHasher.HashPassword(newPassword, user.PasswordSalt);
+
+            // Update the user's password hash and reset password token in the database
+            user.PasswordHash = newPasswordHash;
+            user.ResetPasswordToken = null;
+            user.ResetPasswordTokenExpiry = null;
+            await _userRepository.UpdateAsync(user);
+
+            // Return a response indicating the password reset was successful
+            return new ResetPasswordResponseDto { Message = "Password reset successful." };
+        }
+        private bool ValidateResetPasswordToken(User user, string resetToken)
+        {
+            // Validate the reset password token and its expiry
+            if (user.ResetPasswordToken != resetToken || user.ResetPasswordTokenExpiry == null || user.ResetPasswordTokenExpiry < DateTime.UtcNow)
+            {
+                return false;
+            }
+            return true;
+        }
     }
 }
