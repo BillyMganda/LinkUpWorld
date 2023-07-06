@@ -58,7 +58,6 @@ namespace LinkUpWorld.UsersMicroservice.Infrastructure.Repositories
 
             return response;
         }
-
         public async Task<TokenResponseDto> RefreshToken(RefreshTokenRequestDto request)
         {
             // Retrieve the refresh token from the request
@@ -93,6 +92,26 @@ namespace LinkUpWorld.UsersMicroservice.Infrastructure.Repositories
                 AccessToken = newAccessToken,
                 RefreshToken = newRefreshToken
             };
+        }
+        public async Task<LogoutResponseDto> Logout(LogoutRequestDto request)
+        {
+            // Retrieve the refresh token from the request
+            string refreshToken = request.RefreshToken;
+
+            // Validate the refresh token
+            if (!await _jwtService.ValidateRefreshToken(refreshToken))
+            {
+                throw new CustomValidationException("Invalid refresh token.");
+            }
+
+            // Extract the user ID from the refresh token
+            Guid userId = await _jwtService.GetUserIdFromRefreshToken(refreshToken);
+
+            // Delete the refresh token from the database
+            await _userRepository.DeleteRefreshToken(userId);
+
+            // Return a successful logout response
+            return new LogoutResponseDto { Message = "Logout successful." };
         }
     }
 }
