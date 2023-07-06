@@ -1,6 +1,7 @@
 ﻿using LinkUpWorld.UsersMicroservice.Application.Exceptions;
 using LinkUpWorld.UsersMicroservice.Application.Helpers;
 using LinkUpWorld.UsersMicroservice.Domain.DTOs;
+using LinkUpWorld.UsersMicroservice.Domain.Entities;
 using LinkUpWorld.UsersMicroservice.Domain.Repositories;
 
 namespace LinkUpWorld.UsersMicroservice.Infrastructure.Repositories
@@ -56,6 +57,42 @@ namespace LinkUpWorld.UsersMicroservice.Infrastructure.Repositories
             };
 
             return response;
+        }
+
+        public async Task<TokenResponseDto> RefreshToken(RefreshTokenRequestDto request)
+        {
+            // Retrieve the refresh token from the request
+            string refreshToken = request.RefreshToken;
+
+            // Validate the refresh token
+            if (!await _jwtService.ValidateRefreshToken(refreshToken))
+            {
+                throw new CustomValidationException("Invalid refresh token.");
+            }
+
+            // Extract the user ID from the refresh token
+            Guid userId = await _jwtService.GetUserIdFromRefreshToken(refreshToken);
+
+            // Check if the user exists
+            User user = await _userRepository.GetByIdAsync(userId);
+            if (user == null)
+            {
+                throw new NotFoundException("User not found.");
+            }
+
+            // Generate a new access token and refresh token for the user
+            string newAccessToken = _jwtService.GenerateAccessToken(userId, user);
+            string newRefreshToken = _jwtService.GenerateRefreshToken();
+
+            // Update the refresh token in the database
+            await _userRepository.UpdateRefreshToken(userId, newRefreshToken);
+
+            // Return the new access token and refresh token
+            return new TokenResponseDto
+            {
+                AccessToken = newAccessToken,
+                RefreshToken = newRefreshToken
+            };
         }
     }
 }
