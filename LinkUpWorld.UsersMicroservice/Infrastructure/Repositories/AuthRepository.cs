@@ -2,7 +2,6 @@
 using LinkUpWorld.UsersMicroservice.Application.Helpers;
 using LinkUpWorld.UsersMicroservice.Domain.DTOs;
 using LinkUpWorld.UsersMicroservice.Domain.Repositories;
-using Microsoft.AspNetCore.Identity;
 
 namespace LinkUpWorld.UsersMicroservice.Infrastructure.Repositories
 {
